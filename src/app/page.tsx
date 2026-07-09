@@ -12,7 +12,7 @@ function Nav() {
     <header className="nav">
       <div className="wrap nav__inner">
         <a className="nav__mark" href="#top">
-          Junctus <span className="k">· an anonymity layer</span>
+          Junctus <span className="nav__mark-neo">neo</span>
         </a>
         <nav className="nav__links" aria-label="Sections">
           <a href="#pipeline">How it works</a>
@@ -35,7 +35,7 @@ function Hero() {
     <section className="hero" id="top">
       <div className="wrap">
         <p className="hero__kicker k k--accent">
-          ~/junctus — an open-source, post-quantum anonymity layer
+          ~/junctus neo — an open-source, post-quantum anonymity layer
         </p>
         <h1>
           An anonymity layer: no node holds{" "}
