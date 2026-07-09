@@ -203,8 +203,7 @@ function Thesis() {
               Every request gets a fresh route and a fresh exit. Timing is
               mixed against a global observer. Handshakes and onion packets are
               post-quantum from day one — recorded traffic stays sealed even
-              against a future quantum adversary. And this is no longer a
-              diagram: the network runs end to end, from zero-config discovery
+              against a future quantum adversary. The network runs end to end, from zero-config discovery
               to live multi-hop circuits whose responses no middle relay can
               read.
             </p>
