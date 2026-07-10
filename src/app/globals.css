@@ -267,7 +267,7 @@ em {
   line-height: 0.98;
   letter-spacing: -0.015em;
   margin: 1.4rem 0 0;
-  max-width: 12ch;
+  max-width: 15ch;
   animation: rise 0.8s 0.15s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
@@ -277,8 +277,11 @@ em {
   text-shadow: 0 0 22px var(--accent-glow);
 }
 
+.site-green-text {
+  color: var(--accent);
+}
+
 .hero__sub {
-  max-width: var(--measure);
   font-size: clamp(1.1rem, 1.6vw, 1.3rem);
   line-height: 1.5;
   color: var(--tx-soft);

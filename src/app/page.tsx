@@ -38,12 +38,12 @@ function Hero() {
           ~/junctus neo — an open-source, post-quantum anonymity layer
         </p>
         <h1>
-          An anonymity layer: no node holds{" "}
-          <span className="it">the whole.</span>
+          An anonymity layer <span className="site-green-text">where no node holds{" "}
+          the whole.</span>
         </h1>
         <p className="hero__sub">
-          Junctus encrypts each flow, slices it into <em>k</em>-of-<em>n</em>{" "}
-          shares, and sends every share down its own onion-wrapped,
+          Junctus neo anonymises your data by encrypting each flow, slicing it into <em>k</em>-of-<em>n</em>{" "}
+          shares, and sending every share down its own onion-wrapped,
           timing-mixed path. Any single relay — any group smaller than{" "}
           <em>k</em> — only ever sees a meaningless fragment.
         </p>
@@ -185,7 +185,7 @@ function Thesis() {
           no="01"
           title={
             <>
-              Trust <span className="it">less</span> than Tor.
+              Mr Smith, <span className="it site-green-text">I have been expecting you!</span>
             </>
           }
         />
@@ -233,7 +233,7 @@ function Pipeline() {
           no="02"
           title={
             <>
-              Six verbs per flow<span className="it">, in order.</span>
+              Breaking down, <span className="it site-green-text">the flow.</span>
             </>
           }
           intro="This is the entire per-flow pipeline, exactly as it runs in the engine. Reassembly is the reverse: collect at least k authentic shares, decode, decrypt."
@@ -329,7 +329,7 @@ function Mechanisms() {
           no="03"
           title={
             <>
-              The mechanisms<span className="it">, honestly labeled.</span>
+              The mechanisms, <span className="it site-green-text">explained.</span>
             </>
           }
           intro="All ten have running, tested code — including the four that were research-grade a season ago. Where a hard boundary remains, the card says so, because a roadmap is not a feature."
@@ -416,7 +416,7 @@ function Adversaries() {
           no="04"
           title={
             <>
-              Seven adversaries<span className="it">, one table.</span>
+              The risks, <span className="it site-green-text"> by adversary.</span>
             </>
           }
           intro="A threat model is a table, not a slogan. Every row names what an adversary can do, what Junctus does about it — and the limit we will not hide from you."
@@ -477,7 +477,7 @@ function Security() {
           no="05"
           title={
             <>
-              We attacked it <span className="it">first.</span>
+              We have already attacked it, <span className="it site-green-text"> a lot.</span>
             </>
           }
           intro="Three rounds of adversarial review: first the handshake, the onion layer, the novel core, and the discovery plane — then everything that had grown since — and, most recently, the newest surface of all: the two-party MPC-TLS stack, the REALITY probe-resistant transport, persistent circuit tunnels, the credit economy, and the seed, mix, and camouflage layers around them. Findings cite file and line; the worst were proven with working exploits against the real code. Every finding from all three rounds is closed — fixed in code with a regression test standing guard, or, where the defect was an overclaimed doc, by correcting the claim itself."
@@ -522,7 +522,7 @@ function DialSection() {
           no="06"
           title={
             <>
-              One dial<span className="it">, honest trade-offs.</span>
+              Trade-offs <span className="it site-green-text">in your control.</span>
             </>
           }
           intro="Strong anonymity, low latency, low overhead — pick two. That trilemma is mathematics, not marketing, so Junctus surfaces it as a control instead of pretending it away."
@@ -570,10 +570,10 @@ function Limits() {
           no="07"
           title={
             <>
-              What we <span className="it">won’t</span> pretend.
+              What we <span className="it site-green-text">are not going to pretend.</span>
             </>
           }
-          intro="Every privacy tool has limits. Most bury them. Ours are part of the specification, kept next to the features and versioned with the code."
+          intro="Every privacy tool has limits. Some bury them. Ours are part of the specification, kept next to the features and versioned with the code."
         />
         <div className="limits rv">
           <span className="limits__stamp">Not audited</span>
@@ -683,7 +683,7 @@ function Roadmap() {
           no="08"
           title={
             <>
-              Built in the open<span className="it">, gated by an audit.</span>
+              We are building <span className="it site-green-text"> in the open</span>
             </>
           }
           intro="Everything below with a filled marker has running, tested code — the core, the frontier that was research a season ago, and a hardening tier driven by our own attack on the system. What remains is listed just as plainly."
@@ -760,7 +760,7 @@ function Platforms() {
           no="09"
           title={
             <>
-              One engine<span className="it">, every pocket.</span>
+              One engine - <span className="it site-green-text">every device, every pocket.</span>
             </>
           }
           intro="The protocol lives in a shared Rust core; the platforms are thin shells around it. Phones join the network on their own terms — never as mandatory relays."
