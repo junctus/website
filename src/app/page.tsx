@@ -318,13 +318,13 @@ const MECHS: {
   },
   {
     title: "Live circuits & tunnels",
-    desc: "Sphinx onions travel sockets between separate processes, and a circuit stays open to carry a real TCP byte stream both ways, onion-layered per cell. Only the exit sees the payload; tampering, replay, or reordering anywhere is caught at the endpoint; and no middle relay can read the response.",
+    desc: "Sphinx onions travel sockets between separate processes, and a circuit stays open to carry real traffic both ways — a TCP byte stream, and now UDP datagrams too, so DNS rides the circuits beside everything else — onion-layered per cell. Only the exit sees the payload; tampering, replay, or reordering anywhere is caught at the endpoint; and no middle relay can read the response.",
     tag: "shipped",
     live: true,
   },
   {
     title: "Fresh route + exit, per request",
-    desc: "No two requests share a full path; concurrent routes share no hop — not even the exit; exits rotate and never immediately repeat. There is no stable circuit to watch.",
+    desc: "No two requests share a full path; concurrent routes share no hop — not even the exit; exits rotate subnet, not just node, and never immediately repeat. No two hops of a circuit share a subnet where the network can avoid it. There is no stable circuit to watch.",
     tag: "shipped",
     live: true,
   },
@@ -370,6 +370,12 @@ const MECHS: {
     tag: "shipped",
     live: true,
   },
+  {
+    title: "Sybil-resistant admission",
+    desc: "Joining the relay set costs: a NodeId-bound proof-of-work, a dial-back attestation of an address you actually control, per-subnet and per-ASN caps on what one network can list, and an optional seed-measured uptime gate no relay can forge. Honest scope: this prices out the cheap same-box flood — it does not solve Sybil, because nothing does yet.",
+    tag: "shipped",
+    live: true,
+  },
 ];
 
 function Mechanisms() {
@@ -383,7 +389,7 @@ function Mechanisms() {
               The mechanisms, <span className="it site-green-text">explained.</span>
             </>
           }
-          intro="All ten have running, tested code — including the four that were research-grade a season ago. Where a hard boundary remains, the card says so, because a roadmap is not a feature."
+          intro="All eleven have running, tested code — including the four that were research-grade a season ago. Where a hard boundary remains, the card says so, because a roadmap is not a feature."
         />
         <div className="mechs rv">
           {MECHS.map((m, i) => (
@@ -447,9 +453,10 @@ const THREATS = [
   },
   {
     who: "A Sybil attacker",
-    can: "Floods fake nodes to map or deanonymize",
-    answer: "Bandwidth credits make identities costly; VRF paths resist herding",
-    limit: "An open problem; residual risk while the network is young",
+    can: "Floods fake nodes to land on both ends of your circuit",
+    answer:
+      "Per-subnet and per-ASN admission caps, proof-of-work registration, dial-back attestation, an unforgeable uptime gate — and no two hops share a subnet",
+    limit: "Raises the cost to owning many networks; an adversary spanning ASNs still Sybils — unsolved everywhere",
   },
   {
     who: "A quantum adversary",
@@ -601,7 +608,7 @@ const LIMITS = [
   },
   {
     title: "Sybil is answered, not solved.",
-    body: "Bandwidth credits make fake identities expensive, not impossible — and today’s proof-of-relay receipts are client-attested, not a trustless measurement. Bootstrap may require a seed set. This remains an open research problem everywhere.",
+    body: "Flooding the relay set now costs real resources: a proof-of-work per registration, a dial-back per address, and per-subnet and per-ASN caps — plus an uptime gate the relay cannot forge. That turns “sign N records on one box” into “control N hosts across many networks.” It is still not full Sybil resistance: an adversary with a /16 or an IPv6 block defeats subnet diversity, and we deliberately refused to weight selection by bandwidth receipts, because they are client-attested and forgeable — security theater has no place in the anti-Sybil path.",
   },
   {
     title: "Phones are participants, not pack mules.",
@@ -689,6 +696,8 @@ const HARDENING: Milestone[] = [
   { name: "Adversarial hardening, round three", desc: "Fifty-seven findings against the newest surfaces — MPC-TLS, REALITY, circuit tunnels, credits, seed, mix — every one closed; internal dial-outs default-denied; a RustSec advisory gate now fails CI.", state: "done" },
   { name: "Snapshot delta sync", desc: "Compact records shrink snapshots ~85%, and mirrors serve witness-verifiable diffs — the client rebuilds the signed body and verifies the witnesses over the result, so a tampered diff collapses to a full refetch.", state: "done" },
   { name: "Live committee exit", desc: "Dealer-less, crash-fault-tolerant DKG; an SSRF-guarded clearnet exit that threshold-encrypts, chunks, and discards plaintext; k-subset retry liveness; seed-served descriptors; a runnable CLI — and a publishable DLEQ proof that no member can read the response.", state: "done" },
+  { name: "UDP over circuits", desc: "DNS and every other UDP flow now rides onion circuits beside TCP — per-flow exit splices, one datagram per sealed cell, the same per-cell MACs and strict sequencing.", state: "done" },
+  { name: "Sybil-resistant admission", desc: "Per-subnet and per-ASN attestation caps counting only dial-back-verified addresses, NodeId-bound registration proof-of-work, an unforgeable uptime maturation gate, and subnet-diverse selection in every circuit builder.", state: "done" },
 ];
 
 const REMAINING: Milestone[] = [
@@ -755,7 +764,7 @@ function Roadmap() {
           />
         </div>
         <p className="road-scroll__hint k rv">
-          ↕ 30 shipped milestones — scroll the ledger
+          ↕ 32 shipped milestones — scroll the ledger
         </p>
         <RoadGroup label="What remains" items={REMAINING} />
       </div>
