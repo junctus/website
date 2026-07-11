@@ -1,5 +1,6 @@
 import AuditCarousel from "@/components/AuditCarousel";
 import Dial from "@/components/Dial";
+import DownloadBar from "@/components/DownloadBar";
 import PipelineStepper from "@/components/PipelineStepper";
 import SliceDiagram from "@/components/SliceDiagram";
 
@@ -38,8 +39,8 @@ function Hero() {
           ~/junctus neo — an open-source, post-quantum anonymity layer
         </p>
         <h1>
-          An anonymity layer <span className="site-green-text">where no node holds{" "}
-          the whole.</span>
+          An anonymity layer, <span className="site-green-text">where no node sees{" "}
+          the entire picture.</span>
         </h1>
         <p className="hero__sub">
           Junctus neo anonymises your data by encrypting each flow, slicing it into <em>k</em>-of-<em>n</em>{" "}
@@ -79,83 +80,6 @@ function HeroFigure() {
 }
 
 /* ------------------------------------------------------------------ */
-
-function AppleLogo() {
-  return (
-    <svg viewBox="0 0 384 512" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"
-      />
-    </svg>
-  );
-}
-
-function UbuntuLogo() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <mask id="cof-mask">
-        <rect width="24" height="24" fill="white" />
-        <circle cx="12" cy="4" r="4.2" fill="black" />
-        <circle cx="18.93" cy="16" r="4.2" fill="black" />
-        <circle cx="5.07" cy="16" r="4.2" fill="black" />
-      </mask>
-      <circle
-        cx="12"
-        cy="12"
-        r="8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        mask="url(#cof-mask)"
-      />
-      <circle cx="12" cy="4" r="2.4" fill="currentColor" />
-      <circle cx="18.93" cy="16" r="2.4" fill="currentColor" />
-      <circle cx="5.07" cy="16" r="2.4" fill="currentColor" />
-    </svg>
-  );
-}
-
-function AndroidLogo() {
-  return (
-    <svg viewBox="0 0 576 512" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M420.55,301.93a24,24,0,1,1,24-24,24,24,0,0,1-24,24m-265.1,0a24,24,0,1,1,24-24,24,24,0,0,1-24,24m273.7-144.48,47.94-83a10,10,0,1,0-17.27-10h0l-48.54,84.07a301.25,301.25,0,0,0-246.56,0L116.18,64.45a10,10,0,1,0-17.27,10h0l47.94,83C64.53,202.22,8.24,285.55,0,384H576c-8.24-98.45-64.54-181.78-146.85-226.55"
-      />
-    </svg>
-  );
-}
-
-const DOWNLOADS: { os: string; icon: React.ReactNode }[] = [
-  { os: "macOS", icon: <AppleLogo /> },
-  { os: "Ubuntu", icon: <UbuntuLogo /> },
-  { os: "Android", icon: <AndroidLogo /> },
-  { os: "iPhone", icon: <AppleLogo /> },
-];
-
-function Downloads() {
-  return (
-    <section className="dl" aria-label="Downloads">
-      <div className="wrap dl__inner">
-        <div className="dl__label">
-          <span className="k">Get Started</span>
-        </div>
-        {DOWNLOADS.map((d) => (
-          <div className="dl__item" key={d.os} aria-disabled="true">
-            <span className="dl__row">
-              <span className="dl__id">
-                {d.icon}
-                <span className="dl__os">{d.os}</span>
-              </span>
-              <span className="dl__tag">soon</span>
-            </span>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 
@@ -209,8 +133,10 @@ function Thesis() {
             </p>
             <p>
               Where the overlay must touch the open web, responsibility is
-              diffused — rotated per request, and split across a threshold
-              committee so that no minority of members learns anything at all.
+              diffused — rotated per request, and at the strongest setting
+              handed to a committee whose joint key no member holds: the
+              response returns threshold-encrypted, and each member can prove
+              it cannot read it.
               The engine is <em>neo</em>, one open Rust core shared by every
               platform. The claims are tested, the limits are documented, and
               nothing here asks for your trust where a proof — or an honest
@@ -291,7 +217,7 @@ const MECHS: {
   },
   {
     title: "Self-certifying discovery",
-    desc: "Signed peer records whose id must equal the hash of their keys; witness-signed relay snapshots any untrusted mirror can serve; a DHT clients never appear in — bootstrapped over signed DNS-over-HTTPS records that rotate without a client rebuild.",
+    desc: "Signed peer records whose id must equal the hash of their keys; witness-signed relay snapshots any untrusted mirror can serve; a DHT clients never appear in — bootstrapped over signed DNS-over-HTTPS records that rotate without a client rebuild. Snapshots sync as compact, witness-verifiable deltas: a tampered diff rebuilds to a body no signature matches and collapses to a full refetch.",
     tag: "shipped",
     live: true,
   },
@@ -309,9 +235,9 @@ const MECHS: {
   },
   {
     title: "Committee exit",
-    desc: "The flagship, and it now runs: a real two-party MPC-TLS stack computes the whole ChaCha20-Poly1305 record and SHA-256 key schedule under 2PC — oblivious-transfer extension, garbled circuits verified against their KATs — so the record key, keystream, and plaintext are never assembled at any one party. Today’s gadgets are honest-but-curious by design; malicious-secure garbling and live wiring to a real socket are the remaining, scoped steps.",
-    tag: "core shipped",
-    live: false,
+    desc: "The flagship, and it now runs over real sockets: the committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream, until the 2PC-TLS send path (research) lands.",
+    tag: "shipped",
+    live: true,
   },
   {
     title: "Verifiable privacy",
@@ -391,7 +317,7 @@ const THREATS = [
     who: "A malicious exit",
     can: "Inspects or tampers with clearnet traffic",
     answer:
-      "Fresh per-request exits; a committee that computes the TLS session under two-party MPC, so no member holds the key or the plaintext",
+      "Fresh per-request exits; at the strongest setting, a committee exit whose DKG’d joint key no member holds — responses return threshold-encrypted, and only the client can open them",
     limit: "Plaintext to a clearnet site is inherently visible to some egress",
   },
   {
@@ -542,7 +468,7 @@ const LIMITS = [
   },
   {
     title: "“No responsible exit” has an asterisk.",
-    body: "Inside the overlay it holds fully — no relay ever reassembles a flow. Toward the open web it is diffused and rotated per request, and split across a threshold committee at the strongest setting: reduced, never zero, because some machine must speak to the destination.",
+    body: "Inside the overlay it holds fully — no relay ever reassembles a flow. Toward the open web it is diffused and rotated per request, and split across a threshold committee at the strongest setting — one that can prove it cannot read the response: reduced, never zero, because some machine must still speak the request to the destination.",
   },
   {
     title: "A small network is weak anonymity.",
@@ -636,10 +562,12 @@ const HARDENING: Milestone[] = [
   { name: "Probe-resistant transports", desc: "A REALITY-style authenticated first flight — a prober only ever sees a decoy — with QUIC/MASQUE and WebRTC/DTLS shape camouflage.", state: "done" },
   { name: "Two-party MPC-TLS core", desc: "A full ChaCha20-Poly1305 record and SHA-256 key schedule computed under 2PC — OT extension, garbled circuits matched to their KATs; honest-but-curious today, by design.", state: "done" },
   { name: "Adversarial hardening, round three", desc: "Fifty-seven findings against the newest surfaces — MPC-TLS, REALITY, circuit tunnels, credits, seed, mix — every one closed; internal dial-outs default-denied; a RustSec advisory gate now fails CI.", state: "done" },
+  { name: "Snapshot delta sync", desc: "Compact records shrink snapshots ~85%, and mirrors serve witness-verifiable diffs — the client rebuilds the signed body and verifies the witnesses over the result, so a tampered diff collapses to a full refetch.", state: "done" },
+  { name: "Live committee exit", desc: "Dealer-less, crash-fault-tolerant DKG; an SSRF-guarded clearnet exit that threshold-encrypts, chunks, and discards plaintext; k-subset retry liveness; seed-served descriptors; a runnable CLI — and a publishable DLEQ proof that no member can read the response.", state: "done" },
 ];
 
 const REMAINING: Milestone[] = [
-  { name: "Malicious-secure, live MPC-TLS", desc: "Authenticated garbling to close dual-execution's ≤1-bit leak, the DECO point-to-bit conversion, and wiring to a real TLS socket on the server's own curve.", state: "pending" },
+  { name: "Malicious-secure, live MPC-TLS", desc: "Authenticated garbling to close dual-execution's ≤1-bit leak, the DECO point-to-bit conversion, and wiring to a real TLS socket — the step that turns the committee exit's “cannot read the response” into “plaintext never exists end-to-end.”", state: "pending" },
   { name: "Stream multiplexing", desc: "Congestion control and many streams over one circuit, above today's single-stream tunnel.", state: "pending" },
   { name: "External audit", desc: "Security + cryptography audit before anyone relies on Junctus. A hard gate, not a milestone to rush past.", state: "gate" },
 ];
@@ -688,9 +616,22 @@ function Roadmap() {
           }
           intro="Everything below with a filled marker has running, tested code — the core, the frontier that was research a season ago, and a hardening tier driven by our own attack on the system. What remains is listed just as plainly."
         />
-        <RoadGroup label="Core — implemented" items={CORE} />
-        <RoadGroup label="Frontier — implemented" items={FRONTIER} />
-        <RoadGroup label="Hardening & expansion — implemented" items={HARDENING} />
+        <div
+          className="road-scroll rv"
+          tabIndex={0}
+          role="region"
+          aria-label="Implemented milestones — scrollable list"
+        >
+          <RoadGroup label="Core — implemented" items={CORE} />
+          <RoadGroup label="Frontier — implemented" items={FRONTIER} />
+          <RoadGroup
+            label="Hardening & expansion — implemented"
+            items={HARDENING}
+          />
+        </div>
+        <p className="road-scroll__hint k rv">
+          ↕ 30 shipped milestones — scroll the ledger
+        </p>
         <RoadGroup label="What remains" items={REMAINING} />
       </div>
     </section>
@@ -717,8 +658,8 @@ const PLATFORMS = [
         VPN (<code>NEPacketTunnelProvider</code>) claims the default route and
         gives every intercepted TCP flow its own fresh multi-hop onion circuit
         to its destination — relay snapshots witness-verified before use, one
-        identity shared with the CLI. Builds from source today; not yet
-        notarized for distribution.
+        identity shared with the CLI. Shipped: grab the <code>.dmg</code> from
+        the latest release, or build it from source.
       </>
     ),
   },
@@ -800,6 +741,12 @@ function Platforms() {
               <span className="c"># only the exit can read it</span>
               {"\n"}
               <span className="p">$</span> neo send --message {'"hello"'} --hops 2
+              {"\n\n"}
+              <span className="c"># an exit no member can wiretap</span>
+              {"\n"}
+              <span className="p">$</span> neo committee serve --index 1 --threshold 2 …
+              {"\n"}
+              <span className="p">$</span> neo committee send --destination example.org:80
             </pre>
           </div>
         </div>
@@ -898,7 +845,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <Downloads />
+        <DownloadBar />
         <HeroFigure />
         <Thesis />
         <Pipeline />
