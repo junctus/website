@@ -16,6 +16,7 @@ function Nav() {
           Junctus <span className="nav__mark-neo">neo</span>
         </a>
         <nav className="nav__links" aria-label="Sections">
+          <a href="#compare">Compare</a>
           <a href="#pipeline">How it works</a>
           <a href="#adversaries">Adversaries</a>
           <a href="#security">Security</a>
@@ -151,12 +152,136 @@ function Thesis() {
 
 /* ------------------------------------------------------------------ */
 
+const CMP_COLS = ["", "Junctus neo", "Tor", "Commercial VPNs", "Mixnets"];
+
+const CMP_ROWS: {
+  dim: string;
+  junctus: string;
+  tor: string;
+  vpn: string;
+  mixnet: string;
+}[] = [
+  {
+    dim: "Who you must trust",
+    junctus:
+      "No one in particular — fewer than k colluding relays, and any committee minority, learn nothing",
+    tor: "Your guard and exit must not collude",
+    vpn: "One company, completely",
+    mixnet: "A majority of mix operators",
+  },
+  {
+    dim: "One seized machine reveals",
+    junctus: "A meaningless fragment of one flow’s ciphertext",
+    tor: "Connection metadata; a guard–exit pair can correlate you",
+    vpn: "Your identity and your entire traffic, in one place",
+    mixnet: "One hop’s queue",
+  },
+  {
+    dim: "Traffic splitting",
+    junctus:
+      "k-of-n slices over disjoint onion paths — the shares never travel together",
+    tor: "One circuit carries the whole flow",
+    vpn: "One tunnel carries everything",
+    mixnet: "Per-packet routes, but each packet travels whole",
+  },
+  {
+    dim: "Post-quantum",
+    junctus:
+      "Hybrid X25519 + ML-KEM handshakes and onion packets from day one",
+    tor: "In progress",
+    vpn: "Varies by provider",
+    mixnet: "Not yet",
+  },
+  {
+    dim: "A global observer",
+    junctus: "Poisson mixing and cover traffic, scaled by a dial",
+    tor: "Explicitly out of scope",
+    vpn: "No defense",
+    mixnet: "The founding feature",
+  },
+  {
+    dim: "The exit",
+    junctus:
+      "Fresh per request; at the strongest setting, a committee that provably cannot read the response",
+    tor: "Long-lived exits see plaintext",
+    vpn: "The provider is the exit",
+    mixnet: "Gateways see egress traffic",
+  },
+  {
+    dim: "Blocking resistance",
+    junctus:
+      "Probe-resistant authenticated flights + QUIC/DTLS camouflage — young",
+    tor: "Bridges and pluggable transports, battle-tested",
+    vpn: "Widely blocked; obfuscation varies",
+    mixnet: "Limited today",
+  },
+  {
+    dim: "Maturity",
+    junctus:
+      "Young, a small anonymity set, external audit not yet delivered — the row we lose, stated plainly",
+    tor: "Twenty-five years, millions of users, deeply studied",
+    vpn: "Mature, audited businesses",
+    mixnet: "Growing, token-incentivized",
+  },
+];
+
+function Compare() {
+  return (
+    <section className="section" id="compare">
+      <div className="wrap">
+        <SectionHead
+          no="02"
+          title={
+            <>
+              The alternatives, <span className="it site-green-text">without the spin.</span>
+            </>
+          }
+          intro="Every comparison table you have ever read was written by the vendor who wins it. So was this one — which is why it keeps the rows we lose. If a cell is wrong, open an issue; the table is versioned with the code."
+        />
+        <div className="tm-scroll rv">
+          <table className="cmp">
+            <thead>
+              <tr>
+                {CMP_COLS.map((c, i) => (
+                  <th key={c || "dim"} className={i === 1 ? "cmp__us" : ""}>
+                    {c}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {CMP_ROWS.map((r) => (
+                <tr key={r.dim}>
+                  <td>{r.dim}</td>
+                  <td className="cmp__us">{r.junctus}</td>
+                  <td>{r.tor}</td>
+                  <td>{r.vpn}</td>
+                  <td>{r.mixnet}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="foot rv">
+          Generalizations, honestly made: “Tor” means the stock Tor Browser
+          circuit model, “commercial VPNs” the typical one-hop provider
+          (several now offer post-quantum tunnels), “mixnets” the
+          Nym-style continuous-mix design. Each column’s best deployment is
+          better than its worst row here.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
 function Pipeline() {
   return (
     <section className="section" id="pipeline">
       <div className="wrap">
         <SectionHead
-          no="02"
+          no="03"
           title={
             <>
               Breaking down, <span className="it site-green-text">the flow.</span>
@@ -252,7 +377,7 @@ function Mechanisms() {
     <section className="section" id="mechanisms">
       <div className="wrap">
         <SectionHead
-          no="03"
+          no="04"
           title={
             <>
               The mechanisms, <span className="it site-green-text">explained.</span>
@@ -339,7 +464,7 @@ function Adversaries() {
     <section className="section section--inv" id="adversaries">
       <div className="wrap">
         <SectionHead
-          no="04"
+          no="05"
           title={
             <>
               The risks, <span className="it site-green-text"> by adversary.</span>
@@ -400,7 +525,7 @@ function Security() {
     <section className="section" id="security">
       <div className="wrap">
         <SectionHead
-          no="05"
+          no="06"
           title={
             <>
               We have already attacked it, <span className="it site-green-text"> a lot.</span>
@@ -445,7 +570,7 @@ function DialSection() {
     <section className="section" id="dial">
       <div className="wrap">
         <SectionHead
-          no="06"
+          no="07"
           title={
             <>
               Trade-offs <span className="it site-green-text">in your control.</span>
@@ -493,7 +618,7 @@ function Limits() {
     <section className="section" id="limits">
       <div className="wrap">
         <SectionHead
-          no="07"
+          no="08"
           title={
             <>
               What we <span className="it site-green-text">are not going to pretend.</span>
@@ -608,7 +733,7 @@ function Roadmap() {
     <section className="section" id="roadmap">
       <div className="wrap">
         <SectionHead
-          no="08"
+          no="09"
           title={
             <>
               We are building <span className="it site-green-text"> in the open</span>
@@ -698,7 +823,7 @@ function Platforms() {
     <section className="section" id="platforms">
       <div className="wrap">
         <SectionHead
-          no="09"
+          no="10"
           title={
             <>
               One engine - <span className="it site-green-text">every device, every pocket.</span>
@@ -848,6 +973,7 @@ export default function Home() {
         <DownloadBar />
         <HeroFigure />
         <Thesis />
+        <Compare />
         <Pipeline />
         <Mechanisms />
         <Adversaries />

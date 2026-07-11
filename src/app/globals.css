@@ -1461,6 +1461,73 @@ em {
   color: var(--warn) !important;
 }
 
+/* §02 — comparison table */
+.cmp {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.cmp th {
+  font-family: var(--font-m);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--tx-soft);
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cmp td {
+  padding: 1.05rem 1.1rem;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+  font-size: 0.92rem;
+  color: var(--tx-soft);
+}
+
+.cmp tr:last-child td {
+  border-bottom: none;
+}
+
+.cmp td:first-child {
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  color: var(--tx);
+  min-width: 11rem;
+}
+
+.cmp .cmp__us {
+  background: rgba(63, 217, 100, 0.05);
+  border-left: 1px solid var(--rule-soft);
+  border-right: 1px solid var(--rule-soft);
+}
+
+.cmp th.cmp__us {
+  color: var(--accent);
+}
+
+.cmp td.cmp__us {
+  color: var(--tx);
+}
+
+.cmp tbody tr {
+  transition: background 0.15s ease;
+}
+
+.cmp tbody tr:hover {
+  background: var(--bg-raise);
+}
+
+.foot {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  color: var(--tx-soft);
+  max-width: var(--measure);
+}
+
 .section--inv .foot {
   margin-top: 1.2rem;
   font-size: 0.9rem;
