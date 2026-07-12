@@ -705,9 +705,12 @@ const HARDENING: Milestone[] = [
 ];
 
 const REMAINING: Milestone[] = [
-  { name: "Live-TLS MPC-TLS integration", desc: "Wire the finished malicious-secure 2PC stack into a real TLS session on the exit's own socket — the step that turns the committee exit's “cannot read the response” into “plaintext never exists end-to-end.”", state: "pending" },
-  { name: "Full-session REALITY mimicry", desc: "Complete a real TLS handshake on the authenticated path with matched timing and a browser-exact fingerprint, so a censor cannot distinguish a neo bridge from the site it impersonates.", state: "pending" },
-  { name: "External audit", desc: "Security + cryptography audit before anyone relies on Junctus. A hard gate, not a milestone to rush past.", state: "gate" },
+  { name: "Point any app at neo", desc: "A local SOCKS5 / HTTP-CONNECT proxy over the built multi-stream circuit, so any browser or CLI routes through the overlay — no new crypto, just the last mile of plumbing.", state: "pending" },
+  { name: "End-to-end malicious 2PC", desc: "Wire the finished authenticated-share machinery onto the EC conversion so a tampered value aborts — the one named internal gap left to end-to-end malicious security.", state: "pending" },
+  { name: "Live-TLS MPC-TLS", desc: "Drive the complete, verified 2PC stack against a real TLS 1.3 server on the exit's own socket — the gap between “crypto complete” and a live MPC-TLS session, and the step that makes “plaintext never exists end-to-end” true.", state: "pending" },
+  { name: "Full-session REALITY mimicry", desc: "Proxy a real upstream handshake on the authenticated path with matched timing and a browser-exact fingerprint, so a censor cannot distinguish a neo bridge from the site it impersonates.", state: "pending" },
+  { name: "Resilience & supply", desc: "A second independent seed with a k-of-n witness quorum to kill the bootstrap single point of failure, signed one-command relay onboarding, and store-signed client releases.", state: "pending" },
+  { name: "External audit", desc: "Security + cryptography audit before anyone relies on Junctus, preceded by a frozen audit-readiness package. A hard gate, not a milestone to rush past.", state: "gate" },
 ];
 
 function RoadGroup({ label, items }: { label: string; items: Milestone[] }) {
@@ -752,7 +755,7 @@ function Roadmap() {
               We are building <span className="it site-green-text"> in the open</span>
             </>
           }
-          intro="Everything below with a filled marker has running, tested code — the core, the frontier that was research a season ago, and a hardening tier driven by our own attack on the system. What remains is listed just as plainly."
+          intro="Everything below with a filled marker has running, tested code — the core, the frontier that was research a season ago, and a hardening tier driven by our own attack on the system. What remains is now engineering and an audit, not open research: it is listed just as plainly."
         />
         <div
           className="road-scroll rv"
@@ -809,18 +812,8 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href={`${REPO}/blob/main/docs/SECURITY_ANALYSIS.md`}>
-                  Security analysis
-                </a>
-              </li>
-              <li>
-                <a href={`${REPO}/blob/main/docs/SECURITY_REVIEW_3.md`}>
-                  Security review, round 3
-                </a>
-              </li>
-              <li>
-                <a href={`${REPO}/blob/main/docs/SECURITY_REVIEW_4.md`}>
-                  Security review, round 4
+                <a href={`${REPO}/blob/main/docs/SECURITY_REVIEW.md`}>
+                  Security review
                 </a>
               </li>
               <li>
