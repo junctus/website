@@ -22,7 +22,6 @@ function Nav() {
           <a href="#security">Security</a>
           <a href="#limits">Limits</a>
           <a href="#roadmap">Roadmap</a>
-          <a href="#platforms">Platforms</a>
         </nav>
         <a className="nav__cta" href={REPO}>
           View on GitHub
@@ -774,123 +773,6 @@ function Roadmap() {
 
 /* ------------------------------------------------------------------ */
 
-const PLATFORMS = [
-  {
-    name: "CLI & daemon",
-    desc: (
-      <>
-        macOS and Linux — one cfg-gated binary that runs as client, relay, or
-        discovery seed.
-      </>
-    ),
-  },
-  {
-    name: "macOS app",
-    desc: (
-      <>
-        The full data path in an app: a react-native-macos shell whose system
-        VPN (<code>NEPacketTunnelProvider</code>) claims the default route and
-        gives every intercepted TCP flow its own fresh multi-hop onion circuit
-        to its destination — relay snapshots witness-verified before use, one
-        identity shared with the CLI. Shipped: grab the <code>.dmg</code> from
-        the latest release, or build it from source.
-      </>
-    ),
-  },
-  {
-    name: "iOS",
-    desc: (
-      <>
-        Swift shell over the Rust core via <code>xcframework</code>, tunneling
-        through <code>NEPacketTunnelProvider</code>.
-      </>
-    ),
-  },
-  {
-    name: "Android",
-    desc: (
-      <>
-        Kotlin shell built with <code>cargo-ndk</code>, tunneling through{" "}
-        <code>VpnService</code>.
-      </>
-    ),
-  },
-  {
-    name: "One core",
-    desc: (
-      <>
-        Every platform shares the same open Rust engine — fifteen crates, from{" "}
-        <code>neo-crypto</code> to <code>neo-verify</code>. AGPL-3.0. No forks
-        of trust.
-      </>
-    ),
-  },
-];
-
-function Platforms() {
-  return (
-    <section className="section" id="platforms">
-      <div className="wrap">
-        <SectionHead
-          no="10"
-          title={
-            <>
-              One engine - <span className="it site-green-text">every device, every pocket.</span>
-            </>
-          }
-          intro="The protocol lives in a shared Rust core; the platforms are thin shells around it. Phones join the network on their own terms — never as mandatory relays."
-        />
-        <div className="plats">
-          <div className="plat-list rv">
-            {PLATFORMS.map((p) => (
-              <div className="plat" key={p.name}>
-                <span className="plat__name">{p.name}</span>
-                <span className="plat__desc">{p.desc}</span>
-              </div>
-            ))}
-          </div>
-          <div className="term rv" aria-label="Terminal example">
-            <div className="term__bar">
-              <i />
-              <i />
-              <i />
-            </div>
-            <pre>
-              <span className="c"># one Rust workspace, fifteen crates</span>
-              {"\n"}
-              <span className="p">$</span> git clone {REPO}
-              {"\n"}
-              <span className="p">$</span> cd neo && cargo build --release
-              {"\n\n"}
-              <span className="c"># a discovery seed — serves no user traffic</span>
-              {"\n"}
-              <span className="p">$</span> neo seed --witness witness.key
-              {"\n\n"}
-              <span className="c"># relays that register and forward onions</span>
-              {"\n"}
-              <span className="p">$</span> neo run --relay --listen 127.0.0.1:9001
-              {"\n"}
-              <span className="p">$</span> neo run --relay --listen 127.0.0.1:9002
-              {"\n\n"}
-              <span className="c"># only the exit can read it</span>
-              {"\n"}
-              <span className="p">$</span> neo send --message {'"hello"'} --hops 2
-              {"\n\n"}
-              <span className="c"># an exit no member can wiretap</span>
-              {"\n"}
-              <span className="p">$</span> neo committee serve --index 1 --threshold 2 …
-              {"\n"}
-              <span className="p">$</span> neo committee send --destination example.org:80
-            </pre>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
 function Footer() {
   return (
     <footer className="footer">
@@ -949,7 +831,7 @@ function Footer() {
                 <a href={REPO}>Source — github.com/junctus/neo</a>
               </li>
               <li>
-                <a href="#platforms">Run a relay</a>
+                <a href={REPO}>Run a relay</a>
               </li>
               <li>
                 <a href="https://discovery.junctus.org">
@@ -990,7 +872,6 @@ export default function Home() {
         <DialSection />
         <Limits />
         <Roadmap />
-        <Platforms />
       </main>
       <Footer />
     </>

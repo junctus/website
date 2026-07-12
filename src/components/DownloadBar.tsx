@@ -1,17 +1,33 @@
 "use client";
 
 /**
- * The download strip under the hero. The macOS entry is live: on mount it
- * resolves the newest .dmg from the GitHub releases API (asset names are
- * versioned, so a static latest/download permalink would go stale) and falls
- * back to the releases/latest page when the API is unreachable.
+ * The download strip under the hero. macOS and Linux are live: on mount they
+ * resolve the newest assets from the GitHub releases API (asset names are
+ * versioned, so a static latest/download permalink would go stale) and fall
+ * back to the releases pages when the API is unreachable. Linux opens a
+ * lightbox to pick an architecture (amd64 / arm64 .deb).
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const MAC_RELEASES = "https://github.com/junctus/react-native/releases";
 const MAC_API_LATEST =
   "https://api.github.com/repos/junctus/react-native/releases/latest";
+const LINUX_RELEASES = "https://github.com/junctus/linux/releases";
+const LINUX_API_LATEST =
+  "https://api.github.com/repos/junctus/linux/releases/latest";
+
+type GhRelease = {
+  tag_name?: string;
+  assets?: { name?: string; browser_download_url?: string }[];
+} | null;
+
+function fetchLatest(url: string, onRelease: (rel: GhRelease) => void) {
+  return fetch(url)
+    .then((r) => (r.ok ? r.json() : null))
+    .then(onRelease)
+    .catch(() => {});
+}
 
 function AppleLogo() {
   return (
@@ -24,27 +40,13 @@ function AppleLogo() {
   );
 }
 
-function UbuntuLogo() {
+function LinuxLogo() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <mask id="cof-mask">
-        <rect width="24" height="24" fill="white" />
-        <circle cx="12" cy="4" r="4.2" fill="black" />
-        <circle cx="18.93" cy="16" r="4.2" fill="black" />
-        <circle cx="5.07" cy="16" r="4.2" fill="black" />
-      </mask>
-      <circle
-        cx="12"
-        cy="12"
-        r="8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        mask="url(#cof-mask)"
-      />
-      <circle cx="12" cy="4" r="2.4" fill="currentColor" />
-      <circle cx="18.93" cy="16" r="2.4" fill="currentColor" />
-      <circle cx="5.07" cy="16" r="2.4" fill="currentColor" />
+      <ellipse cx="12" cy="7" rx="4.2" ry="4.4" fill="currentColor" />
+      <ellipse cx="12" cy="14.6" rx="5.6" ry="6.9" fill="currentColor" />
+      <ellipse cx="7.9" cy="21.5" rx="2.7" ry="1.5" fill="currentColor" />
+      <ellipse cx="16.1" cy="21.5" rx="2.7" ry="1.5" fill="currentColor" />
     </svg>
   );
 }
@@ -61,35 +63,61 @@ function AndroidLogo() {
 }
 
 const PENDING: { os: string; icon: React.ReactNode }[] = [
-  { os: "Ubuntu", icon: <UbuntuLogo /> },
   { os: "Android", icon: <AndroidLogo /> },
   { os: "iPhone", icon: <AppleLogo /> },
 ];
 
 export default function DownloadBar() {
   const [dmgHref, setDmgHref] = useState(`${MAC_RELEASES}/latest`);
-  const [version, setVersion] = useState<string | null>(null);
+  const [macVersion, setMacVersion] = useState<string | null>(null);
+  const [linux, setLinux] = useState<{
+    amd: string;
+    arm: string;
+    version: string | null;
+  }>({
+    amd: `${LINUX_RELEASES}/latest`,
+    arm: `${LINUX_RELEASES}/latest`,
+    version: null,
+  });
+  const [linuxOpen, setLinuxOpen] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     let cancelled = false;
-    fetch(MAC_API_LATEST)
-      .then((r) => (r.ok ? r.json() : null))
-      .then(
-        (rel: {
-          tag_name?: string;
-          assets?: { name?: string; browser_download_url?: string }[];
-        } | null) => {
-          if (cancelled || !rel) return;
-          const dmg = rel.assets?.find((a) => a.name?.endsWith(".dmg"));
-          if (dmg?.browser_download_url) setDmgHref(dmg.browser_download_url);
-          if (rel.tag_name) setVersion(rel.tag_name);
-        },
-      )
-      .catch(() => {});
+    fetchLatest(MAC_API_LATEST, (rel) => {
+      if (cancelled || !rel) return;
+      const dmg = rel.assets?.find((a) => a.name?.endsWith(".dmg"));
+      if (dmg?.browser_download_url) setDmgHref(dmg.browser_download_url);
+      if (rel.tag_name) setMacVersion(rel.tag_name);
+    });
+    fetchLatest(LINUX_API_LATEST, (rel) => {
+      if (cancelled || !rel) return;
+      const amd = rel.assets?.find((a) => a.name?.endsWith("_amd64.deb"));
+      const arm = rel.assets?.find((a) => a.name?.endsWith("_arm64.deb"));
+      setLinux((prev) => ({
+        amd: amd?.browser_download_url ?? prev.amd,
+        arm: arm?.browser_download_url ?? prev.arm,
+        version: rel.tag_name ?? prev.version,
+      }));
+    });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!linuxOpen) return;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLinuxOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [linuxOpen]);
 
   return (
     <section className="dl" aria-label="Downloads">
@@ -100,7 +128,7 @@ export default function DownloadBar() {
         <a
           className="dl__item dl__item--live"
           href={dmgHref}
-          aria-label={`Download Junctus neo for macOS${version ? ` ${version}` : ""} (.dmg)`}
+          aria-label={`Download Junctus neo for macOS${macVersion ? ` ${macVersion}` : ""} (.dmg)`}
         >
           <span className="dl__row">
             <span className="dl__id">
@@ -108,10 +136,27 @@ export default function DownloadBar() {
               <span className="dl__os">macOS</span>
             </span>
             <span className="dl__tag dl__tag--live">
-              {version ? `${version} ↓` : ".dmg ↓"}
+              {macVersion ? `${macVersion} ↓` : ".dmg ↓"}
             </span>
           </span>
         </a>
+        <button
+          type="button"
+          className="dl__item dl__item--live"
+          aria-haspopup="dialog"
+          aria-label={`Download Junctus neo for Linux${linux.version ? ` ${linux.version}` : ""} (.deb)`}
+          onClick={() => setLinuxOpen(true)}
+        >
+          <span className="dl__row">
+            <span className="dl__id">
+              <LinuxLogo />
+              <span className="dl__os">Linux</span>
+            </span>
+            <span className="dl__tag dl__tag--live">
+              {linux.version ? `${linux.version} ↓` : ".deb ↓"}
+            </span>
+          </span>
+        </button>
         {PENDING.map((d) => (
           <div className="dl__item" key={d.os} aria-disabled="true">
             <span className="dl__row">
@@ -124,6 +169,52 @@ export default function DownloadBar() {
           </div>
         ))}
       </div>
+
+      {linuxOpen && (
+        <div
+          className="lb"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Linux downloads"
+          onClick={() => setLinuxOpen(false)}
+        >
+          <div className="lb__panel" onClick={(e) => e.stopPropagation()}>
+            <div className="lb__head">
+              <span className="k">
+                linux — pick your architecture
+                {linux.version ? ` · ${linux.version}` : ""}
+              </span>
+              <button
+                type="button"
+                className="lb__x"
+                ref={closeRef}
+                onClick={() => setLinuxOpen(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <a className="lb__opt" href={linux.amd}>
+              <span className="lb__arch">AMD / Intel</span>
+              <span className="k">x86_64 · .deb</span>
+              <span className="dl__tag dl__tag--live">
+                {linux.version ? `${linux.version} ↓` : "latest ↓"}
+              </span>
+            </a>
+            <a className="lb__opt" href={linux.arm}>
+              <span className="lb__arch">ARM</span>
+              <span className="k">arm64 · .deb</span>
+              <span className="dl__tag dl__tag--live">
+                {linux.version ? `${linux.version} ↓` : "latest ↓"}
+              </span>
+            </a>
+            <p className="lb__hint k">
+              install: sudo dpkg -i neo-linux_*.deb · not sure? uname -m —
+              x86_64 → AMD, aarch64 → ARM
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
