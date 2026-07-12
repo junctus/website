@@ -63,13 +63,16 @@ function AndroidLogo() {
 }
 
 const PENDING: { os: string; icon: React.ReactNode }[] = [
-  { os: "Android", icon: <AndroidLogo /> },
   { os: "iPhone", icon: <AppleLogo /> },
 ];
 
 export default function DownloadBar() {
   const [dmgHref, setDmgHref] = useState(`${MAC_RELEASES}/latest`);
   const [macVersion, setMacVersion] = useState<string | null>(null);
+  const [apk, setApk] = useState<{ href: string; version: string | null }>({
+    href: `${MAC_RELEASES}/latest`,
+    version: null,
+  });
   const [linux, setLinux] = useState<{
     amd: string;
     arm: string;
@@ -89,6 +92,11 @@ export default function DownloadBar() {
       const dmg = rel.assets?.find((a) => a.name?.endsWith(".dmg"));
       if (dmg?.browser_download_url) setDmgHref(dmg.browser_download_url);
       if (rel.tag_name) setMacVersion(rel.tag_name);
+      const apkAsset = rel.assets?.find((a) => a.name?.endsWith(".apk"));
+      setApk((prev) => ({
+        href: apkAsset?.browser_download_url ?? prev.href,
+        version: rel.tag_name ?? prev.version,
+      }));
     });
     fetchLatest(LINUX_API_LATEST, (rel) => {
       if (cancelled || !rel) return;
@@ -157,6 +165,21 @@ export default function DownloadBar() {
             </span>
           </span>
         </button>
+        <a
+          className="dl__item dl__item--live"
+          href={apk.href}
+          aria-label={`Download Junctus neo for Android${apk.version ? ` ${apk.version}` : ""} (.apk)`}
+        >
+          <span className="dl__row">
+            <span className="dl__id">
+              <AndroidLogo />
+              <span className="dl__os">Android</span>
+            </span>
+            <span className="dl__tag dl__tag--live">
+              {apk.version ? `${apk.version} ↓` : ".apk ↓"}
+            </span>
+          </span>
+        </a>
         {PENDING.map((d) => (
           <div className="dl__item" key={d.os} aria-disabled="true">
             <span className="dl__row">
