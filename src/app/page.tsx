@@ -317,7 +317,7 @@ const MECHS: {
   },
   {
     title: "Live circuits & tunnels",
-    desc: "Sphinx onions travel sockets between separate processes, and a circuit stays open to carry real traffic both ways — a TCP byte stream, and now UDP datagrams too, so DNS rides the circuits beside everything else — onion-layered per cell. Only the exit sees the payload; tampering, replay, or reordering anywhere is caught at the endpoint; and no middle relay can read the response.",
+    desc: "Sphinx onions travel sockets between separate processes, and a circuit stays open to carry real traffic both ways — a TCP byte stream, UDP datagrams so DNS rides along, and now many independent streams multiplexed over one circuit with per-stream flow control — onion-layered per cell. Only the exit sees the payload; tampering, replay, or reordering anywhere is caught at the endpoint; and no middle relay can read the response.",
     tag: "shipped",
     live: true,
   },
@@ -359,7 +359,7 @@ const MECHS: {
   },
   {
     title: "Committee exit",
-    desc: "The flagship, and it now runs over real sockets: the committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream, until the 2PC-TLS send path (research) lands.",
+    desc: "The flagship, and it now runs over real sockets: the committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream. The send-side answer, a full malicious-secure two-party MPC-TLS stack, is now built and verified (below); wiring it into a live TLS session is the remaining, audit-gated step.",
     tag: "shipped",
     live: true,
   },
@@ -520,8 +520,8 @@ function Adversaries() {
 /* ------------------------------------------------------------------ */
 
 const AUDIT_STATS = [
-  { n: "05", label: "critical breaks — found, proven, fixed", warn: false },
-  { n: "82", label: "findings closed across three rounds", warn: false },
+  { n: "07", label: "critical breaks — found, proven, fixed", warn: false },
+  { n: "90", label: "findings closed across four rounds", warn: false },
   { n: "00", label: "highs or mediums left open", warn: false },
   { n: "01", label: "external audit not yet delivered", warn: true },
 ];
@@ -537,7 +537,7 @@ function Security() {
               We have already attacked it, <span className="it site-green-text"> a lot.</span>
             </>
           }
-          intro="Three rounds of adversarial review: first the handshake, the onion layer, the novel core, and the discovery plane — then everything that had grown since — and, most recently, the newest surface of all: the two-party MPC-TLS stack, the REALITY probe-resistant transport, persistent circuit tunnels, the credit economy, and the seed, mix, and camouflage layers around them. Findings cite file and line; the worst were proven with working exploits against the real code. Every finding from all three rounds is closed — fixed in code with a regression test standing guard, or, where the defect was an overclaimed doc, by correcting the claim itself."
+          intro="Four rounds of adversarial review: first the handshake, the onion layer, the novel core, and the discovery plane — then everything that had grown since — then the newest surface of all: the two-party MPC-TLS stack, the REALITY transport, circuit tunnels, and the credit economy — and, most recently, a whole-codebase pass across all sixteen crates, run as a multi-agent workflow where every critical and high finding had to survive a second reviewer trying to refute it from the source. Findings cite file and line; the worst were proven with working exploits against the real code. Every finding from all four rounds is closed — fixed in code with a regression test standing guard, or, where the defect was an overclaimed doc, by correcting the claim itself."
         />
         <div className="audit__stats rv">
           {AUDIT_STATS.map((s) => (
@@ -553,16 +553,18 @@ function Security() {
         </div>
         <AuditCarousel />
         <p className="pipe__note rv">
-          The third round was the harshest by design: fifty-seven findings
-          against code no review had ever touched, from a probe-resistance
-          authenticator forgeable with a degenerate curve point to a credit
-          mint wired to nothing. All fifty-seven are closed. Findings that
-          looked severe but did not survive adversarial re-verification were
-          downgraded and the reasoning recorded — a plausible-but-wrong finding
-          is treated as a defect of the review, not a win. And the supply chain
-          is now guarded too: any RustSec advisory in the dependency tree fails
-          CI. An internal review is still not an audit: the external gate
-          stands.
+          The fourth round was the widest: a single multi-agent sweep of the
+          whole codebase — roughly twenty-five thousand lines across sixteen
+          crates, ten domains reviewed in parallel — where every critical and
+          high finding was handed to a second reviewer tasked with refuting it
+          from the source before it counted. Two high-severity claims were
+          correctly refuted and are not bugs; a plausible-but-wrong finding is
+          treated as a defect of the review, not a win. Of the eight that
+          survived, two were critical — an IPv4-mapped-IPv6 address slipping
+          past the SSRF guard, and a circuit counter whose overflow would have
+          reused keystream — and all eight are fixed. The cryptographic core,
+          the committee, the credit economy, and routing all came back clean.
+          An internal review is still not an audit: the external gate stands.
         </p>
       </div>
     </section>
@@ -615,7 +617,7 @@ const LIMITS = [
   },
   {
     title: "It is not audited.",
-    body: "Three rounds of internal adversarial review found real breaks — five of them critical — and every finding is fixed. But that is not the external security and cryptography audit that gates real-world use. Until that audit: experiment, contribute, poke holes — do not bet your freedom on it.",
+    body: "Four rounds of internal adversarial review found real breaks — seven of them critical — and every finding is fixed. But that is not the external security and cryptography audit that gates real-world use. Until that audit: experiment, contribute, poke holes — do not bet your freedom on it.",
   },
 ];
 
@@ -691,17 +693,20 @@ const HARDENING: Milestone[] = [
   { name: "Persistent circuit tunnels", desc: "A circuit stays open and carries a real TCP byte stream, onion-layered per cell; a mauled cell is caught at the endpoint.", state: "done" },
   { name: "Threshold committee decryption", desc: "Client-combined partial decryptions with DLEQ proofs — the committee never assembles the key or the plaintext.", state: "done" },
   { name: "Probe-resistant transports", desc: "A REALITY-style authenticated first flight — a prober only ever sees a decoy — with QUIC/MASQUE and WebRTC/DTLS shape camouflage.", state: "done" },
-  { name: "Two-party MPC-TLS core", desc: "A full ChaCha20-Poly1305 record and SHA-256 key schedule computed under 2PC — OT extension, garbled circuits matched to their KATs; honest-but-curious today, by design.", state: "done" },
   { name: "Adversarial hardening, round three", desc: "Fifty-seven findings against the newest surfaces — MPC-TLS, REALITY, circuit tunnels, credits, seed, mix — every one closed; internal dial-outs default-denied; a RustSec advisory gate now fails CI.", state: "done" },
   { name: "Snapshot delta sync", desc: "Compact records shrink snapshots ~85%, and mirrors serve witness-verifiable diffs — the client rebuilds the signed body and verifies the witnesses over the result, so a tampered diff collapses to a full refetch.", state: "done" },
   { name: "Live committee exit", desc: "Dealer-less, crash-fault-tolerant DKG; an SSRF-guarded clearnet exit that threshold-encrypts, chunks, and discards plaintext; k-subset retry liveness; seed-served descriptors; a runnable CLI — and a publishable DLEQ proof that no member can read the response.", state: "done" },
   { name: "UDP over circuits", desc: "DNS and every other UDP flow now rides onion circuits beside TCP — per-flow exit splices, one datagram per sealed cell, the same per-cell MACs and strict sequencing.", state: "done" },
   { name: "Sybil-resistant admission", desc: "Per-subnet and per-ASN attestation caps counting only dial-back-verified addresses, NodeId-bound registration proof-of-work, an unforgeable uptime maturation gate, and subnet-diverse selection in every circuit builder.", state: "done" },
+  { name: "Stream multiplexing", desc: "Many independent logical streams over one circuit, each with per-stream byte flow control, so a SOCKS proxy or full VPN return path rides a single onion — no extra crypto, all of the cell channel's integrity inherited.", state: "done" },
+  { name: "Malicious-secure two-party MPC-TLS", desc: "The full send-side crypto: KOS malicious OT, WRK17/KRRW18 authenticated garbling, SPDZ field arithmetic, DECO EC-to-field conversion, and the RFC 8439 AEAD + TLS 1.3 key schedule under 2PC — each built from its published spec, matched byte-for-byte against vetted references, and adversarially verified. Complete and tested; audit-gated, not yet production-proven.", state: "done" },
+  { name: "In-ClientHello REALITY", desc: "The authenticator now hides inside a structurally-valid TLS 1.3 ClientHello, and an un-authenticated prober is reverse-proxied to a real upstream site. Honest boundary: the authenticated session is still distinguishable from a full TLS handshake — matched full-session mimicry is the remaining flagship step.", state: "done" },
+  { name: "Adversarial hardening, round four", desc: "A whole-codebase multi-agent sweep — sixteen crates, ten domains, every critical/high adversarially re-verified. Eight real findings, two critical, all fixed; two more claims correctly refuted; the crypto core, committee, credits, and routing came back clean.", state: "done" },
 ];
 
 const REMAINING: Milestone[] = [
-  { name: "Malicious-secure, live MPC-TLS", desc: "Authenticated garbling to close dual-execution's ≤1-bit leak, the DECO point-to-bit conversion, and wiring to a real TLS socket — the step that turns the committee exit's “cannot read the response” into “plaintext never exists end-to-end.”", state: "pending" },
-  { name: "Stream multiplexing", desc: "Congestion control and many streams over one circuit, above today's single-stream tunnel.", state: "pending" },
+  { name: "Live-TLS MPC-TLS integration", desc: "Wire the finished malicious-secure 2PC stack into a real TLS session on the exit's own socket — the step that turns the committee exit's “cannot read the response” into “plaintext never exists end-to-end.”", state: "pending" },
+  { name: "Full-session REALITY mimicry", desc: "Complete a real TLS handshake on the authenticated path with matched timing and a browser-exact fingerprint, so a censor cannot distinguish a neo bridge from the site it impersonates.", state: "pending" },
   { name: "External audit", desc: "Security + cryptography audit before anyone relies on Junctus. A hard gate, not a milestone to rush past.", state: "gate" },
 ];
 
@@ -763,7 +768,7 @@ function Roadmap() {
           />
         </div>
         <p className="road-scroll__hint k rv">
-          ↕ 32 shipped milestones — scroll the ledger
+          ↕ 35 shipped milestones — scroll the ledger
         </p>
         <RoadGroup label="What remains" items={REMAINING} />
       </div>
@@ -811,6 +816,11 @@ function Footer() {
               <li>
                 <a href={`${REPO}/blob/main/docs/SECURITY_REVIEW_3.md`}>
                   Security review, round 3
+                </a>
+              </li>
+              <li>
+                <a href={`${REPO}/blob/main/docs/SECURITY_REVIEW_4.md`}>
+                  Security review, round 4
                 </a>
               </li>
               <li>

@@ -43,6 +43,16 @@ const CASES = [
     title: "The give-away silence",
     body: "Cover packets left the mixer at one constant size while real frames varied — so a passive observer could split cover from real by length alone, quietly voiding half the cover-traffic defense. Every frame now travels as a fixed-size cell, length-identical on the wire, with the true length sealed inside the encryption.",
   },
+  {
+    sev: "was critical",
+    title: "The address in disguise",
+    body: "Fourth round, whole-codebase sweep: the SSRF guard that keeps exits and dial-backs off internal networks classified IPv6 correctly but missed IPv4-mapped addresses, so a target like [::ffff:169.254.169.254] — cloud metadata — read as a public address and was allowed. The IPv6 branch now recurses on the mapped IPv4 form, and mapped loopback, RFC1918, and metadata ranges are all covered by tests.",
+  },
+  {
+    sev: "was critical",
+    title: "The counter that wraps",
+    body: "Each circuit cell is XOR-encrypted under a keystream keyed by its sequence number, incremented with an unchecked add. On a 64-bit wrap the keystream would repeat, and an observer could XOR two cells to recover plaintext — unreachable in practice, but a guarantee that was merely conditional. All six increment sites now use a checked add and abort on overflow, so the one-time property is unconditional.",
+  },
 ];
 
 export default function AuditCarousel() {
