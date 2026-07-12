@@ -148,7 +148,7 @@ em {
 }
 
 .nav__mark {
-  font-family: var(--font-d);
+  font-family: var(--font-m);
   font-size: 1.75rem;
   letter-spacing: 0.01em;
   line-height: 1;
@@ -157,6 +157,7 @@ em {
   align-items: baseline;
   gap: 0.55rem;
   transform: translateY(-2px);
+  text-transform: uppercase;
 }
 .nav__mark:hover {
   color: var(--tx);
@@ -1172,7 +1173,6 @@ button.dl__item {
 
 .thesis__body {
   grid-column: 2;
-  max-width: 66ch;
 }
 
 .thesis__body p {
@@ -1285,7 +1285,6 @@ button.dl__item {
 
 .pipe__note {
   margin-top: 1.4rem;
-  max-width: var(--measure);
   color: var(--tx-soft);
   font-size: 0.98rem;
 }
@@ -1477,6 +1476,694 @@ button.dl__item {
   }
 }
 
+/* §04 — mechanisms master-detail explorer */
+.mex {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.9fr) 1.4fr;
+  border: 1px solid var(--rule);
+}
+
+.mex__list {
+  border-right: 1px solid var(--rule);
+}
+
+.mex__row {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr auto;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule-soft);
+  color: var(--tx-soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mex__group:last-child .mex__row {
+  border-bottom: none;
+}
+
+.mex__row:hover {
+  background: var(--bg-raise);
+  color: var(--tx);
+}
+
+.mex__row--on {
+  background: var(--accent-dim);
+  color: var(--tx);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.mex__row:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.mex__no {
+  font-family: var(--font-m);
+  font-size: 0.72rem;
+  color: var(--tx-faint);
+}
+
+.mex__row--on .mex__no {
+  color: var(--accent);
+}
+
+.mex__name {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.mex__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.mex__dot--live {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.mex__dot--research {
+  background: var(--warn);
+}
+
+.mex__detail {
+  padding: 2rem 1.9rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 20rem;
+}
+
+.mex__viz {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem 0 0.4rem;
+  min-height: 0;
+}
+
+.mex__detail-top {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.1rem;
+}
+
+.mex__detail h3 {
+  font-family: var(--font-d);
+  font-weight: 400;
+  font-size: 2.1rem;
+  line-height: 1.03;
+  margin-bottom: 0.9rem;
+}
+
+.mex__detail p {
+  color: var(--tx-soft);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  max-width: 54ch;
+}
+
+.mex__detail-foot {
+  padding-top: 1.6rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--tx-faint);
+  border-top: 1px solid var(--rule-soft);
+}
+
+.mex__detail-foot .k {
+  color: var(--tx-faint);
+}
+
+.mex__tag {
+  font-family: var(--font-m);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.5rem;
+  border: 1px solid currentColor;
+}
+
+.mex__tag--live {
+  color: var(--accent);
+}
+
+.mex__tag--research {
+  color: var(--warn);
+}
+
+.mex__tag--threat {
+  color: var(--danger);
+}
+
+.mex__tag--cmp {
+  color: var(--tx-soft);
+}
+
+.mex__dot--bad {
+  background: var(--danger);
+  box-shadow: 0 0 6px var(--danger-glow);
+}
+
+/* §02 compare — four-way breakdown per dimension */
+.cmpx__rows {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-top: 0.4rem;
+}
+
+.cmpx__row {
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--rule-soft);
+  border-left: 2px solid var(--rule);
+}
+
+.cmpx__row--us {
+  border-left-color: var(--accent);
+  background: rgba(63, 217, 100, 0.05);
+}
+
+.cmpx__head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.cmpx__name {
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.cmpx__row--us .cmpx__name {
+  color: var(--accent);
+}
+
+.cmpx__bar {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.cmpx__seg {
+  width: 15px;
+  height: 6px;
+  background: var(--rule);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: cmpx-grow 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.cmpx__seg--on {
+  background: var(--tx-soft);
+}
+
+.cmpx__seg--us {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+@keyframes cmpx-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.cmpx__win {
+  margin-left: auto;
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tx-faint);
+  border: 1px solid var(--rule);
+  padding: 0.1rem 0.4rem;
+}
+
+.cmpx__row--us .cmpx__win {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.cmpx__cell {
+  color: var(--tx-soft);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmpx__seg {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+/* §05 adversary detail — three labelled fields */
+.adv-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 54ch;
+}
+
+.adv-field dt {
+  margin-bottom: 0.2rem;
+}
+
+.adv-field dd {
+  color: var(--tx-soft);
+  font-size: 0.99rem;
+  line-height: 1.5;
+}
+
+.adv-field__k--bad {
+  color: var(--danger);
+}
+
+.adv-field__k--good {
+  color: var(--accent);
+}
+
+.adv-field__k--warn {
+  color: var(--warn);
+}
+
+/* the section sits on the darker inverted background */
+.section--inv .mex__row--on .mex__no {
+  color: var(--accent);
+}
+
+/* --- mechanism visuals (§04 detail scenes) --- */
+.mv {
+  width: 100%;
+  max-width: 30rem;
+  height: auto;
+  overflow: visible;
+}
+
+.mv-lbl {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--tx-faint);
+}
+
+.mv-lbl--accent {
+  fill: var(--accent);
+}
+
+.mv-line {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1.4;
+}
+
+.mv-dash {
+  stroke: var(--accent);
+  stroke-opacity: 0.5;
+  stroke-dasharray: 5 5;
+  animation: mv-flow 1s linear infinite;
+}
+
+@keyframes mv-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+.mv-node {
+  fill: none;
+  stroke: var(--tx-faint);
+  stroke-width: 1.6;
+}
+
+.mv-node--on {
+  fill: var(--accent-dim);
+  stroke: var(--accent);
+  animation: mv-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes mv-pulse {
+  0%,
+  100% {
+    stroke-opacity: 0.55;
+  }
+  50% {
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 4px var(--accent-glow));
+  }
+}
+
+.mv-chip {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 3px var(--accent-glow));
+}
+
+.mv-chip--out {
+  fill: var(--tx);
+}
+
+.mv-chip--cover {
+  fill: none;
+  stroke: var(--tx-faint);
+  stroke-width: 1.2;
+}
+
+.mv-chip--reject {
+  fill: var(--danger);
+}
+
+.mv-node--bad {
+  fill: var(--danger-dim);
+  stroke: var(--danger);
+  animation: mv-pulse-bad 1.6s ease-in-out infinite;
+}
+
+@keyframes mv-pulse-bad {
+  0%,
+  100% {
+    stroke-opacity: 0.6;
+  }
+  50% {
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 4px var(--danger-glow));
+  }
+}
+
+.mv-eye {
+  fill: none;
+  stroke: var(--tx-faint);
+  stroke-width: 1.4;
+}
+
+.mv-pupil {
+  fill: var(--tx-soft);
+  animation: mv-scan 2.4s ease-in-out infinite;
+}
+
+@keyframes mv-scan {
+  0%,
+  100% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+.mv-bar-fill {
+  fill: var(--warn);
+  width: 0;
+  animation: mv-fill 3s ease-in-out infinite;
+}
+
+@keyframes mv-fill {
+  0% {
+    width: 0;
+  }
+  60%,
+  100% {
+    width: 116px;
+  }
+}
+
+.mv-lbl--warn {
+  fill: var(--warn);
+}
+
+.mv-lbl--bad {
+  fill: var(--danger);
+}
+
+.mv-travel {
+  offset-rotate: 0deg;
+  animation: mv-travel 2.6s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes mv-travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.mv-onion {
+  fill: none;
+  stroke-width: 1.4;
+}
+.mv-onion--3 {
+  stroke: var(--accent);
+  stroke-opacity: 0.35;
+  animation: mv-peel 2.6s ease-in-out infinite;
+}
+.mv-onion--2 {
+  stroke: var(--accent);
+  stroke-opacity: 0.6;
+  animation: mv-peel 2.6s ease-in-out infinite 0.3s;
+}
+.mv-onion--1 {
+  fill: var(--accent);
+}
+
+@keyframes mv-peel {
+  0%,
+  60% {
+    stroke-opacity: 0.5;
+  }
+  100% {
+    stroke-opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+.mv-box {
+  fill: var(--bg-raise);
+  stroke: var(--rule);
+  stroke-width: 1.2;
+}
+
+.mv-chip-box {
+  fill: none;
+  stroke: var(--tx-faint);
+  stroke-width: 1.2;
+}
+
+.mv-chip-box--hash {
+  stroke: var(--accent);
+  animation: mv-pulse 1.8s ease-in-out infinite;
+}
+
+.mv-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: mv-draw 4.2s ease-in-out infinite;
+}
+
+@keyframes mv-draw {
+  0% {
+    stroke-dashoffset: 420;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  40%,
+  70% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  90%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+.mv-shield {
+  fill: var(--accent-dim);
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  animation: mv-pulse 1.8s ease-in-out infinite;
+}
+
+.mv-bolt {
+  stroke: var(--danger);
+  stroke-width: 2;
+  animation: mv-bolt 1.6s ease-in infinite;
+}
+
+@keyframes mv-bolt {
+  0%,
+  100% {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(6px);
+    opacity: 0.6;
+  }
+}
+
+.mv-lock {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+}
+
+.mv-check {
+  animation: mv-appear 2.6s ease-in-out infinite;
+}
+
+@keyframes mv-appear {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  65%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.mv-tick {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mv-wheel {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1.4;
+  transform-origin: 180px 96px;
+  animation: mv-spin 3s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+}
+
+.mv-spoke {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-opacity: 0.5;
+  transform-origin: 180px 96px;
+  animation: mv-spin 3s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+}
+
+@keyframes mv-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  60%,
+  100% {
+    transform: rotate(376deg);
+  }
+}
+
+.mv-token {
+  fill: var(--accent-dim);
+  stroke: var(--accent);
+  stroke-width: 1.6;
+}
+
+.mv-blindwrap {
+  fill: none;
+  stroke: var(--tx-faint);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+  animation: mv-pulse 1.8s ease-in-out infinite;
+}
+
+.mv-cut {
+  stroke: var(--tx-faint);
+  stroke-dasharray: 4 4;
+  stroke-opacity: 0.5;
+}
+
+.mv-cut-x {
+  stroke: var(--danger);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mv * {
+    animation: none !important;
+  }
+  .mv-travel {
+    offset-distance: 60%;
+  }
+  .mv-route,
+  .mv-check {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* the per-row accordion body is desktop-hidden; the detail panel serves it */
+.mex__acc {
+  display: none;
+  padding: 0 1.1rem 1.2rem 4.3rem;
+}
+
+.mex__acc p {
+  color: var(--tx-soft);
+  font-size: 0.96rem;
+  margin-top: 0.7rem;
+}
+
+@media (max-width: 760px) {
+  .mex {
+    grid-template-columns: 1fr;
+  }
+  .mex__list {
+    border-right: none;
+  }
+  /* collapse to an accordion: hide the side detail, reveal the inline body */
+  .mex__detail {
+    display: none;
+  }
+  .mex__acc {
+    display: block;
+  }
+  .mex__acc[hidden] {
+    display: none;
+  }
+  .mex__row {
+    grid-template-columns: 2.4rem 1fr auto;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* §04 adversaries                                                     */
 /* ------------------------------------------------------------------ */
@@ -1611,14 +2298,12 @@ button.dl__item {
   margin-top: 1.2rem;
   font-size: 0.9rem;
   color: var(--tx-soft);
-  max-width: var(--measure);
 }
 
 .section--inv .foot {
   margin-top: 1.2rem;
   font-size: 0.9rem;
   color: var(--tx-soft);
-  max-width: var(--measure);
 }
 
 /* ------------------------------------------------------------------ */
@@ -2232,8 +2917,8 @@ button.dl__item {
 }
 
 .footer__word {
-  font-family: var(--font-d);
-  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-family: var(--font-m);
+  font-size: 3em;
   line-height: 0.95;
   letter-spacing: -0.01em;
 }

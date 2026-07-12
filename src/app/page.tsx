@@ -1,8 +1,10 @@
+import AdversaryExplorer from "@/components/AdversaryExplorer";
 import AuditCarousel from "@/components/AuditCarousel";
+import CompareExplorer from "@/components/CompareExplorer";
 import Dial from "@/components/Dial";
 import DownloadBar from "@/components/DownloadBar";
+import MechExplorer from "@/components/MechExplorer";
 import PipelineStepper from "@/components/PipelineStepper";
-import SliceDiagram from "@/components/SliceDiagram";
 
 const REPO = "https://github.com/junctus/neo";
 
@@ -61,26 +63,6 @@ function Hero() {
   );
 }
 
-function HeroFigure() {
-  return (
-    <section
-      className="hero-fig"
-      aria-label="Figure 1 — one request through the overlay"
-    >
-      <div className="wrap">
-        <div className="hero__diagram">
-          <span className="k">
-            Fig. 1 — one request through the overlay (n = 4, k = 3)
-          </span>
-          <SliceDiagram />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
 /* ------------------------------------------------------------------ */
 
 function SectionHead({
@@ -109,7 +91,7 @@ function Thesis() {
           no="01"
           title={
             <>
-              Mr Smith, <span className="it site-green-text">I have been expecting you!</span>
+              What the <span className="it site-green-text">hell did you do?</span>
             </>
           }
         />
@@ -151,78 +133,105 @@ function Thesis() {
 
 /* ------------------------------------------------------------------ */
 
-const CMP_COLS = ["", "Junctus neo", "Tor", "Commercial VPNs", "Mixnets"];
-
-const CMP_ROWS: {
-  dim: string;
-  junctus: string;
-  tor: string;
-  vpn: string;
-  mixnet: string;
-}[] = [
-  {
-    dim: "Who you must trust",
-    junctus:
-      "No one in particular — fewer than k colluding relays, and any committee minority, learn nothing",
-    tor: "Your guard and exit must not collude",
-    vpn: "One company, completely",
-    mixnet: "A majority of mix operators",
-  },
-  {
-    dim: "One seized machine reveals",
-    junctus: "A meaningless fragment of one flow’s ciphertext",
-    tor: "Connection metadata; a guard–exit pair can correlate you",
-    vpn: "Your identity and your entire traffic, in one place",
-    mixnet: "One hop’s queue",
-  },
-  {
-    dim: "Traffic splitting",
-    junctus:
-      "k-of-n slices over disjoint onion paths — the shares never travel together",
-    tor: "One circuit carries the whole flow",
-    vpn: "One tunnel carries everything",
-    mixnet: "Per-packet routes, but each packet travels whole",
-  },
-  {
-    dim: "Post-quantum",
-    junctus:
-      "Hybrid X25519 + ML-KEM handshakes and onion packets from day one",
-    tor: "In progress",
-    vpn: "Varies by provider",
-    mixnet: "Not yet",
-  },
-  {
-    dim: "A global observer",
-    junctus: "Poisson mixing and cover traffic, scaled by a dial",
-    tor: "Explicitly out of scope",
-    vpn: "No defense",
-    mixnet: "The founding feature",
-  },
-  {
-    dim: "The exit",
-    junctus:
-      "Fresh per request; at the strongest setting, a committee that provably cannot read the response",
-    tor: "Long-lived exits see plaintext",
-    vpn: "The provider is the exit",
-    mixnet: "Gateways see egress traffic",
-  },
-  {
-    dim: "Blocking resistance",
-    junctus:
-      "Probe-resistant authenticated flights + QUIC/DTLS camouflage — young",
-    tor: "Bridges and pluggable transports, battle-tested",
-    vpn: "Widely blocked; obfuscation varies",
-    mixnet: "Limited today",
-  },
-  {
-    dim: "Maturity",
-    junctus:
-      "Young, a small anonymity set, external audit not yet delivered — the row we lose, stated plainly",
-    tor: "Twenty-five years, millions of users, deeply studied",
-    vpn: "Mature, audited businesses",
-    mixnet: "Growing, token-incentivized",
-  },
-];
+/* Strength ranks (0–3) are editorial but deliberately honest — Junctus is not
+   the winner of every dimension (mixnets take the global observer; Tor takes
+   blocking resistance; Tor and VPNs take maturity). Order per row: Junctus,
+   Tor, Commercial VPNs, Mixnets. */
+const COMPARE = {
+  solutions: ["Junctus neo", "Tor", "Commercial VPNs", "Mixnets"],
+  rows: [
+    {
+      dim: "Who you must trust",
+      cells: [
+        {
+          t: "No one in particular — fewer than k colluding relays, and any committee minority, learn nothing",
+          r: 3,
+        },
+        { t: "Your guard and exit must not collude", r: 2 },
+        { t: "One company, completely", r: 1 },
+        { t: "A majority of mix operators", r: 2 },
+      ],
+    },
+    {
+      dim: "One seized machine reveals",
+      cells: [
+        { t: "A meaningless fragment of one flow’s ciphertext", r: 3 },
+        { t: "Connection metadata; a guard–exit pair can correlate you", r: 2 },
+        { t: "Your identity and your entire traffic, in one place", r: 1 },
+        { t: "One hop’s queue", r: 2 },
+      ],
+    },
+    {
+      dim: "Traffic splitting",
+      cells: [
+        {
+          t: "k-of-n slices over disjoint onion paths — the shares never travel together",
+          r: 3,
+        },
+        { t: "One circuit carries the whole flow", r: 1 },
+        { t: "One tunnel carries everything", r: 1 },
+        { t: "Per-packet routes, but each packet travels whole", r: 2 },
+      ],
+    },
+    {
+      dim: "Post-quantum",
+      cells: [
+        {
+          t: "Hybrid X25519 + ML-KEM handshakes and onion packets from day one",
+          r: 3,
+        },
+        { t: "In progress", r: 2 },
+        { t: "Varies by provider", r: 2 },
+        { t: "Not yet", r: 1 },
+      ],
+    },
+    {
+      dim: "A global observer",
+      cells: [
+        { t: "Poisson mixing and cover traffic, scaled by a dial", r: 2 },
+        { t: "Explicitly out of scope", r: 0 },
+        { t: "No defense", r: 0 },
+        { t: "The founding feature", r: 3 },
+      ],
+    },
+    {
+      dim: "The exit",
+      cells: [
+        {
+          t: "Fresh per request; at the strongest setting, a committee that provably cannot read the response",
+          r: 3,
+        },
+        { t: "Long-lived exits see plaintext", r: 1 },
+        { t: "The provider is the exit", r: 1 },
+        { t: "Gateways see egress traffic", r: 1 },
+      ],
+    },
+    {
+      dim: "Blocking resistance",
+      cells: [
+        {
+          t: "Probe-resistant authenticated flights + QUIC/DTLS camouflage — young",
+          r: 2,
+        },
+        { t: "Bridges and pluggable transports, battle-tested", r: 3 },
+        { t: "Widely blocked; obfuscation varies", r: 1 },
+        { t: "Limited today", r: 1 },
+      ],
+    },
+    {
+      dim: "Maturity",
+      cells: [
+        {
+          t: "Young, a small anonymity set, external audit not yet delivered — the row we lose, stated plainly",
+          r: 1,
+        },
+        { t: "Twenty-five years, millions of users, deeply studied", r: 3 },
+        { t: "Mature, audited businesses", r: 3 },
+        { t: "Growing, token-incentivized", r: 2 },
+      ],
+    },
+  ],
+};
 
 function Compare() {
   return (
@@ -237,30 +246,7 @@ function Compare() {
           }
           intro="Every comparison table you have ever read was written by the vendor who wins it. So was this one — which is why it keeps the rows we lose. If a cell is wrong, open an issue; the table is versioned with the code."
         />
-        <div className="tm-scroll rv">
-          <table className="cmp">
-            <thead>
-              <tr>
-                {CMP_COLS.map((c, i) => (
-                  <th key={c || "dim"} className={i === 1 ? "cmp__us" : ""}>
-                    {c}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {CMP_ROWS.map((r) => (
-                <tr key={r.dim}>
-                  <td>{r.dim}</td>
-                  <td className="cmp__us">{r.junctus}</td>
-                  <td>{r.tor}</td>
-                  <td>{r.vpn}</td>
-                  <td>{r.mixnet}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <CompareExplorer data={COMPARE} />
         <p className="foot rv">
           Generalizations, honestly made: “Tor” means the stock Tor Browser
           circuit model, “commercial VPNs” the typical one-hop provider
@@ -359,7 +345,7 @@ const MECHS: {
   },
   {
     title: "Committee exit",
-    desc: "The flagship, and it now runs over real sockets: the committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream. The send-side answer, a full malicious-secure two-party MPC-TLS stack, is now built and verified (below); wiring it into a live TLS session is the remaining, audit-gated step.",
+    desc: "The committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream. The send-side answer, a full malicious-secure two-party MPC-TLS stack, is now built and verified (below); wiring it into a live TLS session is the remaining, audit-gated step.",
     tag: "shipped",
     live: true,
   },
@@ -388,28 +374,9 @@ function Mechanisms() {
               The mechanisms, <span className="it site-green-text">explained.</span>
             </>
           }
-          intro="All eleven have running, tested code — including the four that were research-grade a season ago. Where a hard boundary remains, the card says so, because a roadmap is not a feature."
+          intro="All eleven have running, tested code. Where a hard boundary remains, the card says so, because a roadmap is not a feature."
         />
-        <div className="mechs rv">
-          {MECHS.map((m, i) => (
-            <article className="mech" key={m.title}>
-              <div className="mech__top">
-                <span className="mech__no">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className={`mech__tag ${
-                    m.live ? "mech__tag--live" : "mech__tag--research"
-                  }`}
-                >
-                  {m.tag}
-                </span>
-              </div>
-              <h3>{m.title}</h3>
-              <p>{m.desc}</p>
-            </article>
-          ))}
-        </div>
+        <MechExplorer items={MECHS} />
       </div>
     </section>
   );
@@ -476,30 +443,9 @@ function Adversaries() {
               The risks, <span className="it site-green-text"> by adversary.</span>
             </>
           }
-          intro="A threat model is a table, not a slogan. Every row names what an adversary can do, what Junctus does about it — and the limit we will not hide from you."
+          intro="A threat model is a list of adversaries, not a slogan. Pick one: it names what they can do, what Junctus does about it — and the limit we will not hide from you."
         />
-        <div className="tm-scroll rv">
-          <table className="tm">
-            <thead>
-              <tr>
-                <th>Adversary</th>
-                <th>What they can do</th>
-                <th>What Junctus does</th>
-                <th className="tm__limit-head">The honest limit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {THREATS.map((t) => (
-                <tr key={t.who}>
-                  <td>{t.who}</td>
-                  <td>{t.can}</td>
-                  <td>{t.answer}</td>
-                  <td>{t.limit}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <AdversaryExplorer items={THREATS} />
         <p className="foot rv">
           Several rows are asserted by adversary-simulation tests in CI today:
           colluding relays below the threshold learn nothing; a single relay
@@ -865,7 +811,6 @@ export default function Home() {
       <main>
         <Hero />
         <DownloadBar />
-        <HeroFigure />
         <Thesis />
         <Compare />
         <Pipeline />
