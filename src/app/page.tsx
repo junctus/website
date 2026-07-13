@@ -345,7 +345,7 @@ const MECHS: {
   },
   {
     title: "Committee exit",
-    desc: "The committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The honest boundary: response direction only — the egress still sees the request it speaks upstream. The send-side answer, a full malicious-secure two-party MPC-TLS stack, is now built and verified (below); wiring it into a live TLS session is the remaining, audit-gated step.",
+    desc: "The committee’s joint key is born dealer-less by distributed key generation — no party, not even the client, ever holds it. The exit threshold-encrypts the clearnet response and discards the plaintext; each hop seals its partial decryption; only the client can combine them. Every member can publish a DLEQ non-custody proof: even the exit cannot read the response. The send-side answer has now caught up: a malicious-secure two-party MPC-TLS session completes a real TLS 1.3 handshake against a stock server, so plaintext need never be assembled at one party.",
     tag: "shipped",
     live: true,
   },
@@ -648,12 +648,13 @@ const HARDENING: Milestone[] = [
   { name: "Malicious-secure two-party MPC-TLS", desc: "The full send-side crypto: KOS malicious OT, WRK17/KRRW18 authenticated garbling, SPDZ field arithmetic, DECO EC-to-field conversion, and the RFC 8439 AEAD + TLS 1.3 key schedule under 2PC — each built from its published spec, matched byte-for-byte against vetted references, and adversarially verified. Complete and tested; audit-gated, not yet production-proven.", state: "done" },
   { name: "In-ClientHello REALITY", desc: "The authenticator now hides inside a structurally-valid TLS 1.3 ClientHello, and an un-authenticated prober is reverse-proxied to a real upstream site. Honest boundary: the authenticated session is still distinguishable from a full TLS handshake — matched full-session mimicry is the remaining flagship step.", state: "done" },
   { name: "Adversarial hardening, round four", desc: "A whole-codebase multi-agent sweep — sixteen crates, ten domains, every critical/high adversarially re-verified. Eight real findings, two critical, all fixed; two more claims correctly refuted; the crypto core, committee, credits, and routing came back clean.", state: "done" },
+  { name: "Networked malicious 2PC", desc: "The authenticated online now runs as a genuine two-party protocol over real sockets, no in-process modelling: TinyOT preprocessing (malicious KOS-COT authenticated bits → distributed AND triples → sacrifice → bucketing) feeding a networked evaluator that runs real circuits — including the 67k-gate SHA-256 key schedule — and aborts on a forged MAC.", state: "done" },
+  { name: "Live 2PC-TLS against a real server", desc: "The complete stack completes a real TLS 1.3 handshake against a stock rustls server: split-scalar P-256 ECDHE neither party can open, the RFC 8446 key schedule and record layer under 2PC, KeyUpdate, and full X.509 chain-building to trust anchors — interop-verified under both the semi-honest and the malicious authenticated-garbling engine, across ~130 tests. “Plaintext never assembled at one party” is now demonstrated end to end, not just on paper.", state: "done" },
 ];
 
 const REMAINING: Milestone[] = [
   { name: "Point any app at neo", desc: "A local SOCKS5 / HTTP-CONNECT proxy over the built multi-stream circuit, so any browser or CLI routes through the overlay — no new crypto, just the last mile of plumbing.", state: "pending" },
-  { name: "End-to-end malicious 2PC", desc: "Wire the finished authenticated-share machinery onto the EC conversion so a tampered value aborts — the one named internal gap left to end-to-end malicious security.", state: "pending" },
-  { name: "Live-TLS MPC-TLS", desc: "Drive the complete, verified 2PC stack against a real TLS 1.3 server on the exit's own socket — the gap between “crypto complete” and a live MPC-TLS session, and the step that makes “plaintext never exists end-to-end” true.", state: "pending" },
+  { name: "Broaden live 2PC-TLS", desc: "One ciphersuite and curve now work end to end; more are bounded adds — assemble AES-GCM (the AES-128 circuit and CTR keystream are already built and validated; the GHASH tag remains) and add x25519, plus a constant-round networked online for speed. Then splice it into the committee's forward leg.", state: "pending" },
   { name: "Full-session REALITY mimicry", desc: "Proxy a real upstream handshake on the authenticated path with matched timing and a browser-exact fingerprint, so a censor cannot distinguish a neo bridge from the site it impersonates.", state: "pending" },
   { name: "Resilience & supply", desc: "A second independent seed with a k-of-n witness quorum to kill the bootstrap single point of failure, signed one-command relay onboarding, and store-signed client releases.", state: "pending" },
   { name: "External audit", desc: "Security + cryptography audit before anyone relies on Junctus, preceded by a frozen audit-readiness package. A hard gate, not a milestone to rush past.", state: "gate" },
@@ -717,7 +718,7 @@ function Roadmap() {
           />
         </div>
         <p className="road-scroll__hint k rv">
-          ↕ 35 shipped milestones — scroll the ledger
+          ↕ 37 shipped milestones — scroll the ledger
         </p>
         <RoadGroup label="What remains" items={REMAINING} />
       </div>
