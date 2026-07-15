@@ -415,6 +415,48 @@ function Sybil() {
   );
 }
 
+function TwoPcExit() {
+  return (
+    <>
+      <circle className="mv-node mv-node--on" cx="34" cy="95" r="7" />
+      <text className="mv-lbl" x="34" y="120" textAnchor="middle">
+        you
+      </text>
+      {/* two committee members jointly running the TLS session */}
+      <circle className="mv-node mv-node--on" cx="140" cy="62" r="6" />
+      <circle className="mv-node mv-node--on" cx="140" cy="128" r="6" />
+      <text className="mv-lbl" x="140" y="158" textAnchor="middle">
+        2 members
+      </text>
+      <path className="mv-line mv-dash" d="M41,95 L134,66" />
+      <path className="mv-line mv-dash" d="M41,95 L134,124" />
+      {/* the joint session key neither member holds */}
+      <path className="mv-line" d="M146,62 L196,88" />
+      <path className="mv-line" d="M146,128 L196,102" />
+      <rect className="mv-box" x="196" y="82" width="26" height="26" rx="2" />
+      <path className="mv-lock" d="M203,86 a6,6 0 0,1 12,0 v4 h-12 z" />
+      <path className="mv-cut-x" d="M150,88 l10,10 M160,88 l-10,10" />
+      <text className="mv-lbl mv-lbl--accent" x="180" y="72" textAnchor="middle">
+        no member holds the key
+      </text>
+      {/* real TLS 1.3 to the destination, cert verified */}
+      <path
+        className="mv-line mv-dash"
+        d="M222,95 L286,95"
+        style={{ animationDuration: "2.2s" }}
+      />
+      <rect className="mv-box" x="286" y="78" width="40" height="34" rx="3" />
+      <path className="mv-tick" d="M298,95 l6,6 l12,-14" />
+      <text className="mv-lbl" x="306" y="128" textAnchor="middle">
+        real TLS 1.3
+      </text>
+      <text className="mv-lbl mv-lbl--warn" x="180" y="184" textAnchor="middle">
+        experimental · tens of seconds
+      </text>
+    </>
+  );
+}
+
 const SCENES = [
   Slicing,
   Circuits,
@@ -427,6 +469,7 @@ const SCENES = [
   Committee,
   Pir,
   Sybil,
+  TwoPcExit,
 ];
 
 const LABELS = [
@@ -441,6 +484,7 @@ const LABELS = [
   "committee members each emit a partial; only the client combines them",
   "a query splits across two servers, neither learning which record",
   "proof-of-work and subnet caps filter a flood of fake nodes",
+  "two committee members jointly run a real TLS session so neither holds the key — slow, experimental",
 ];
 
 export default function MechVisual({ index }: { index: number }) {

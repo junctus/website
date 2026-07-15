@@ -42,7 +42,7 @@ const LEVELS: Record<
     quote: "Maximum anonymity: heavy cover traffic, deep mixing, committee exits.",
     mixing: "Deep per-hop mixing",
     cover: "Heavy, near constant-rate",
-    exit: "k-of-n MPC-TLS committee — no member holds the key or plaintext",
+    exit: "k-of-n threshold committee — no member can read the response",
     observer: "Decorrelated · ZK shuffle proofs built, live wiring ahead",
     latency: 85,
     latencyNote: "heavy — by design",
